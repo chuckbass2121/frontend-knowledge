@@ -1,0 +1,30 @@
+{
+  "name": "frontend-knowledge",
+  "version": "1.0.0",
+  "description": "frontend knowledge map",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
+    "vuepress": "^1.7.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "dev": "vuepress dev docs",
+    "build": "vuepress build docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chuckbass2121/frontend-knowledge.git"
+  },
+  "keywords": [
+    "frontend"
+  ],
+  "author": "Chuck",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chuckbass2121/frontend-knowledge/issues"
+  },
+  "homepage": "https://github.com/chuckbass2121/frontend-knowledge#readme"
+}
