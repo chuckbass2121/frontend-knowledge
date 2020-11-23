@@ -1,4 +1,4 @@
-# XSS
+# XSS （跨站脚本攻击）
 有用户输入的地方就有可能发生XSS攻击。
 
 ## XSS分类
@@ -80,9 +80,19 @@
 就是通过转义 &, <, >, ", ' 为HTML实体实现的。
 
 对 & 的转义必须放在第一
-
-![escape-function](./Images/escape-function.png)
-
+```js
+var escapeHtml = function(str) {
+  if(!str){
+    return;
+  }
+  str = str.replace(/$/g, '&amp;');
+  str = str.replace(/</g, '&lt;');
+  str = str.replace(/>/g, '&gt;');
+  str = str.replace(/"/g, '&quto;');
+  str = str.replace(/'/g, '&#39');
+  return str;
+}
+```
 
 转义为HTML实体后，上面的 <, >, &, ", ' 就会只显示他们自己。
 
