@@ -1,4 +1,4 @@
-# Generator
+# Generator 生成器
 
 Generator 是 ES6 提出的一种新的异步编程的解决方案，与传统的函数完全不同。
 
@@ -39,7 +39,7 @@ f.next() // {value: "b", done: false}
 f.next() // {value: undefined, done: true}
 ```
 
-可以看出，调用 `next()` 之后返回的是一个对象，其中对象中的 value 表示 field 后面表达式的结果，done 代表遍历是否结束。
+可以看出，调用 `next()` 之后返回的是一个对象，其中对象中的 value 表示 yield 后面表达式的结果，done 代表遍历是否结束。
 
 ## yield 表达式
 
