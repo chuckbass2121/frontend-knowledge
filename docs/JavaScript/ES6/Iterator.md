@@ -178,5 +178,64 @@ let array = [...map];
 console.log(array); // [["title", "es6"], ["format", "print"]]
 ``` 
 
+## Iterator 高级用法，next传参数
+yield表达式本身没有返回值，或者说总是返回undefined。
+next方法可以带一个参数，该参数就会被当作上一个yield表达式的返回值。
+由于next方法的参数表示上一个yield表达式的返回值，所以在第一次使用next方法时，传递参数是无效的。
+V8 引擎直接忽略第一次使用next方法时的参数，只有从第二次使用next方法开始，参数才是有效的。
+从语义上讲，第一个next方法用来启动遍历器对象，所以不用带有参数。
+
+```js
+function* foo(x) {
+  var y = 2 * (yield (x + 1));
+  var z = yield (y / 3);
+  return (x + y + z);
+}
+var b = foo(5);
+b.next() // { value:6, done:false }
+b.next(12) // { value:8, done:false }
+b.next(13) // { value:42, done:true }
+
+// 调用next，返回第一个yield表达式的值，但是 等号左边的语句并没有执行。
+// 等号左边的语句会在下一次调用next执行。
+// 上面代码第一次调用b的next方法时，返回x+1的值6；
+// 第二次调用next方法，将上一次yield表达式的值设为12，因此y等于24，返回y / 3的值8；
+// 第三次调用next方法，将上一次yield表达式的值设为13，因此z等于13，这时x等于5，y等于24，
+// 所以return语句的值等于42。
+```
+
+### next()、throw()、return() 的共同点
+next()、throw()、return()这三个方法本质上是同一件事，可以放在一起理解。
+它们的作用都是让 Generator 函数恢复执行，并且使用不同的语句替换yield表达式。
+
+```js
+const g = function* (x, y) {
+  let result = yield x + y;
+  return result;
+};
+
+const gen = g(1, 2);
+gen.next(); // Object {value: 3, done: false}
+
+// next()是将yield表达式替换成一个值。
+gen.next(1); // Object {value: 1, done: true}
+// 相当于将 let result = yield x + y
+// 替换成 let result = 1;
+// 上面代码中，第二个next(1)方法就相当于将yield表达式替换成一个值1。
+// 如果next方法没有参数，就相当于替换成undefined。
+
+// throw()是将yield表达式替换成一个throw语句。
+gen.throw(new Error('出错了')); // Uncaught Error: 出错了
+// 相当于将 let result = yield x + y
+// 替换成 let result = throw(new Error('出错了'));
+
+// return()是将yield表达式替换成一个return语句。
+gen.return(2); // Object {value: 2, done: true}
+// 相当于将 let result = yield x + y
+// 替换成 let result = return 2;
+```
+
+建议去看Generator自动执行.md
+
 
 
