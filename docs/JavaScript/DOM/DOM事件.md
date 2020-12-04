@@ -9,16 +9,42 @@
     }
     ```
 
-    >   当希望为同一个元素/标签绑定多个同类型的事件时（如给同一个按钮绑定三个点击事件），是不被允许的。DOM 0事件绑定，给元素的事件行为绑定方法，这些方法都是在当前元素事件行为的冒泡阶段（或者目标阶段）执行的
+    >1. 同一个元素/标签绑定多个同类型的事件时（如给同一个按钮绑定三个点击事件），是不被允许的。
+    >2. 给元素的事件行为绑定方法，这些方法都是在冒泡阶段执行的。
 
 2.  DOM 2级
 
-    ```javascript
+    使用 DOM2 方式的主要优势是可以为同一个事件添加多个事件处理程序。
+
+    ```js
+    let btn = document.getElementById("myBtn"); 
+    btn.addEventListener("click", () => { 
+     console.log(this.id); 
+    }, false); 
+    btn.addEventListener("click", () => { 
+     console.log("Hello world!"); 
+    }, false);
+    ```
+    
+    ```js
     el.addEventListener(eventName, callback, useCapture)
+    el.removeEventListener(eventName, callback, useCapture)
     
     // eventName: 事件名称，可以是标准的 DOM 事件
     // callback: 回调函数，当事件触发时，函数会被注入一个参数为当前的事件对象 event
     // useCapture: 默认为false，代表事件句柄在冒泡阶段执行
+    // true 表示在捕获阶段调用事件处理程序
+    ```
+    ```js
+    // 删除时要使用同一个 handler
+    let btn = document.getElementById("myBtn"); 
+    let handler = function() { 
+     console.log(this.id); 
+    }; 
+    // add
+    btn.addEventListener("click", handler, false); 
+    // remove
+    btn.removeEventListener("click", handler, false); // 有效果！
     ```
 
 3.  DOM 3级，写法和 DOM 2级一致，只是在 DOM 2级事件的基础上添加了更多的事件类型
@@ -40,7 +66,8 @@
     >   变动事件：当底层 DOM 结构发生变化时触发：DOMsubtreeModified
     >
     >   同时 DOM 3级事件也允许使用者自定义一些事件
-
+    >   
+    >   H5定义的事件
 
 
 ## DOM 事件模型 事件流
@@ -54,30 +81,64 @@
 3.  冒泡阶段：事件从目标节点自下而上向 window 对象传播的阶段
 
 ![DOM 事件流](https://user-gold-cdn.xitu.io/2019/12/31/16f5acb3c238de6c?imageslim)
-
-
-
-## 事件委托（代理）
-
-由于事件会在冒泡阶段向上传播到父节点，因此可以把子节点的监听函数定义在父节点上，由父节点的监听函数统一处理多个子元素的事件，这种方法叫事件的代理。
-
-优点：
-
-*   减少内存消耗，不需要为每个子元素绑定事件，提高性能
-*   动态绑定事件
-
+![DOM 事件流](./Images/event-stream.png)
 
 
 ## Event 对象使用
+>在 DOM 中发生事件时，所有相关信息都会被收集并存储在一个名为 event 的对象中。这个对象包
+含了一些基本信息，比如导致事件的元素、发生的事件类型，以及可能与特定事件相关的任何其他数据。
+例如，鼠标操作导致的事件会生成鼠标位置信息，而键盘操作导致的事件会生成与被按下的键有关的信
+息。所有浏览器都支持这个 event 对象，尽管支持方式不同
 
-1.  阻止默认行为：`event.preventDefault()`
+1. 获取event对象：
+```js
+let btn = document.getElementById("myBtn"); 
+btn.onclick = function(event) { 
+ console.log(event.type); // "click" 
+}; 
+btn.addEventListener("click", (event) => { 
+ console.log(event.type); // "click" 
+}, false);
+```
+```
+<input type="button" value="Click Me" onclick="console.log(event.type)">
+```
 
-2.  阻止冒泡：
+2. 公共属性
+
+|属性/方法| 类 型| 读/写| 说 明|
+|-------|------|-----|----|
+|bubbles |布尔值| 只读| 表示事件是否冒泡|
+|cancelable| 布尔值| 只读| 表示是否可以取消事件的默认行为|
+|currentTarget| 元素| 只读| 当前事件处理程序所在的元素|
+|defaultPrevented| 布尔值| 只读| true 表示已经调用 preventDefault()方法（DOM3 Events 中新增）|
+|detail| 整数| 只读| 事件相关的其他信息|
+|eventPhase| 整数| 只读 |表示调用事件处理程序的阶段：1 代表捕获阶段，2 代表到达目标，3 代表冒泡阶段|
+|preventDefault()| 函数| 只读| 用于取消事件的默认行为。只有 cancelable 为 true 才可以调用这个方法|
+|stopImmediatePropagation()| 函数| 只读| 用于取消所有后续事件捕获或事件冒泡，并阻止调用任何后续事件处理程序（DOM3 Events 中新增）|
+|stopPropagation()| 函数| 只读| 用于取消所有后续事件捕获或事件冒泡。只有 bubbles为 true 才可以调用这个方法
+|target| 元素| 只读 |事件目标||
+|trusted |布尔值 |只读| true 表示事件是由浏览器生成的。false 表示事件是开发者通过 JavaScript 创建的（DOM3 Events 中新增）|
+|type |字符串| 只读| 被触发的事件类型|
+|View |AbstractView |只读 |与事件相关的抽象视图。等于事件所发生的 window 对象|
+
+
+3.  阻止默认行为：`event.preventDefault()`
+
+    链接的默认行为就是在被单击时导航到 href 属性指定的 URL。如果想阻止这个导航行为，可以在 onclick 事件处理程序中取消。
+    ```js
+    let link = document.getElementById("myLink"); 
+    link.onclick = function(event) { 
+     event.preventDefault(); 
+    };
+    ```
+
+4.  阻止冒泡：
 
     1.  `event.stopPropagation()` 阻止事件冒泡到父元素，阻止任何父事件处理程序被执行
     2.  `event.stopImmediatePropagation()` 既能阻止事件向父元素冒泡，也能阻止元素同事件类型的其他监听器被触发
 
-3.  `event.target & event.currentTarget`
+5.  `event.target & event.currentTarget`
 
     ```html
     <div id="a">
@@ -126,7 +187,20 @@
     ```
 
     由上述例子可知：`event.currentTarget` 始终是监听事件者，而 `event.target` 是事件的真正发出者
+    currentTarget 是注册事件处理程序的元素。而 target 属性才是 click 事件真正的目标。
 
+6. 在事件处理程序内部，this 对象始终等于 currentTarget 的值
+    而当 eventPhase 等于 2 时，this、target 和 currentTarget 三者相等。
+
+## 事件委托（代理）
+
+由于事件会在冒泡阶段向上传播到父节点，因此可以把子节点的监听函数定义在父节点上，
+由父节点的监听函数统一处理多个子元素的事件，这种方法叫事件的代理。
+
+优点：
+
+*   减少内存消耗，不需要为每个子元素绑定事件，提高性能
+*   动态绑定事件
 
 
 ## 自定义事件
@@ -203,4 +277,10 @@ event.once('click', (...rest) => {
   console.log(rest)
 })
 ```
+
+## DOMContentLoaded 事件
+window 的 load 事件会在页面完全加载后触发，因为要等待很多外部资源加载完成，所以会花费
+较长时间。而 DOMContentLoaded 事件会在 DOM 树构建完成后立即触发，而不用等待图片、JavaScript
+文件、CSS 文件或其他资源加载完成。相对于 load 事件，DOMContentLoaded 可以让开发者在外部资
+源下载的同时就能指定事件处理程序，从而让用户能够更快地与页面交互。
 

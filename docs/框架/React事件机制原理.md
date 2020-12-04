@@ -14,7 +14,7 @@
 
 **得出结论**：
 
-原生事件阻止冒泡肯定会组织合成事件的触发，合成事件的阻止冒泡不会影响原生事件。
+原生事件阻止冒泡肯定会阻止合成事件的触发，合成事件的阻止冒泡不会影响原生事件。
 
 原因在于，浏览器的事件执行机制是执行在前，冒泡在后，所以在原生事件中阻止冒泡会阻止合成事件的执行，反之不成立。
 
@@ -40,35 +40,35 @@ React 将事件全部统一交给 document 来委托处理的原因是：
 
 ## 对原生事件的封装
 
-![img](https://img.toutiao.io/c/c42b8701d54b2e0e4c44be09f96ac74c)
+![img](./Images/syntheticEvent4.png)
 
 上面的代码是个一个元素添加点击事件的回调函数，方法中的参数 e 其实并不是原生事件中的 event，而是 React 包装过的对象，同时原生事件中的 event 被放在了这个对象的 nativeEvent 字段。
 
-![img](https://img.toutiao.io/c/9acbeed79c3f69f3466ef0d876a1ac76)
+![img](./Images/syntheticEvent5.png)
 
 再看下官网文档
 
-![img](https://img.toutiao.io/c/ca5b652449c39916cb953ffbf09802ed)
+![img](./Images/syntheticEvent6.png)
 
 SyntheticEvent 是 React 合成事件的基类，定义了合成事件的基础公共属性和方法。
 
 React 会根据当前的事件类型来使用不同的合成事件对象，比如鼠标：点击事件 -- SyntheticMouseEvent，焦点事件 -- SyntheticFocusEvent 等，但都是继承与 SyntheticEvent。
 
-![img](https://img.toutiao.io/c/7c060b2495e851dd6ca3d21248373d0e)
+![img](./Images/syntheticEvent7.png)
 
-![img](https://img.toutiao.io/c/46e5fdd99533494524182ad9c7058e4e)
+![img](./Images/syntheticEvent8.png)
 
-![img](https://img.toutiao.io/c/45de201105da7d15c1975bb23adb7a74)
+![img](./Images/syntheticEvent9.png)
 
 ## 对原生事件的升级和改造
 
-对于有些 DOM 元素事件，我们进行事件绑定之后，Reacgt 并不是只处理你生命的事件类型，还会额外增加一些其他的事件，帮助我们提升交互和体验。
+对于有些 DOM 元素事件，我们进行事件绑定之后，React 并不是只处理你生命的事件类型，还会额外增加一些其他的事件，帮助我们提升交互和体验。
 
 比如说：
 
 当我们给 input 生命一个 onChange 事件，React 帮我们做了很多工作：
 
-![img](https://img.toutiao.io/c/0bdf29992204982e5dca47eb0055dd2f)
+![img](./Images/syntheticEvent10.png)
 
 可以看到 React 不只是帮助我们注册一个 onchange 事件，还注册了很多其他的事件。
 

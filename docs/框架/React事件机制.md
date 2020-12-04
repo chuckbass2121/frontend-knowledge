@@ -25,7 +25,7 @@ React 事件机制我们主要分三部分来说：
 
 ## 插件注册
 
-![img](https://user-gold-cdn.xitu.io/2020/7/2/1730fdaad30d69f1?imageslim)
+![img](./Images/syntheticEvent.png)
 
 从上图中，我们可以看到目前 React 一共有 6 个事件插件，但是目前版本中 ChangeEventPlugin 没有在使用，同时 ResponderEventPlugin 只有 RN 在使用。
 
@@ -67,7 +67,7 @@ React 事件机制我们主要分三部分来说：
 
 ## 事件注册
 
-![img](https://user-gold-cdn.xitu.io/2020/7/2/1730fdb22f10d7d5?imageslim)
+![img](./Images/syntheticEvent2.png)
 
 这一步主要是针对 DOM 树解析，添加事件的流程。Listener 里面包含了事件获取执行。registrationModules、registrationNameDependencies 就是之前插件注册时生成的对象。
 
@@ -77,7 +77,7 @@ React 事件机制我们主要分三部分来说：
 
 ## 事件分发
 
-![img](https://user-gold-cdn.xitu.io/2020/7/2/1730fdaf8bf23453?imageslim)
+![img](./Images/syntheticEvent3.png)
 
 React16 以后开始做浏览器的调度工作，其实调度工作不止 DOM diff 上，在事件上也做了部分调度。
 
@@ -89,7 +89,7 @@ React 把事件做了分类：
 
 上面三种事件其实最后都是调用了 dispatchEvent 函数，但是因为优先级的原因，事件的调度方法不一样，最后执行的时间也不一样。
 
-```js
+```flow js
 // 事件优先级
 export const DiscreteEvent: EventPriority = 0;
 export const UserBlockingEvent: EventPriority = 1;
