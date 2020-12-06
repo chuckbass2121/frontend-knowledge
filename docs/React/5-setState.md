@@ -41,8 +41,8 @@ this.setState({
 
 解决办法：传入函数 this.setState( (prevState, prevProps) => stateChange) )
 
-2. setTimeout 中 setState 是同步的
-3. 自己定义的 DOM 事件，setState 是同步的
+2. setTimeout中， setState 是同步的
+3. 原生DOM事件中，setState 是同步的
 
 ```jsx
 class StateDemo extends React.Component {
