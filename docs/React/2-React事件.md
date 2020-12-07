@@ -76,4 +76,4 @@ class myComponent extends React.Component {
 好处：
 1. 更好的兼容性和跨平台
 2. 挂载在document上，减少内存消耗，避免忘记绑。
-![原理之-合成事件机制](./23-原理之-合成事件机制.md)
+![原理之-合成事件机制](23-原理之-合成事件机制.md)
