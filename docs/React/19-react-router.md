@@ -56,6 +56,32 @@ export default function BasicExample() {
 }
 ```
 
+# 路由参数
+
+每一个匹配的路由component中都可以获取到：
+
+- match 获取传递过来的动态参数
+- location 获取url信息
+- history 可以用来做跳转
+
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+
+// All route props (match, location and history) are available to User
+function User(props) {
+  return <h1>Hello {props.match.params.username}!</h1>;
+}
+
+ReactDOM.render(
+  <Router>
+    <Route path="/user/:username" component={User} />
+  </Router>,
+  node
+);
+```
+
 # 动态路由
 ```
 <Route path="/project/:id">

@@ -44,3 +44,14 @@ const App = (props)=>{
 export default App;
 
 ```
+## 实际应用
+react-router 中的 Route组件中的render属性
+```jsx
+// convenient inline rendering
+ReactDOM.render(
+  <Router>
+    <Route path="/home" render={() => <div>Home</div>} />
+  </Router>,
+  node
+);
+```

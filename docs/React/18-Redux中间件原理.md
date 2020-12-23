@@ -606,7 +606,37 @@ function compose(...fns) {
 代码应该不难看懂，在上一个例子的基础上，我们主要做了两个改造
 1. 使用compose方法取代了middlewares.reverse()，compose是函数式编程中常用的一种组合函数的方式，
    compose内部使用reduce巧妙地组合了中间件函数，使传入的中间件函数变成(...arg) => mid1(mid2(mid3(...arg)))这种形式
-   
+
+```js
+const middlewareArr = middlewares.map(middleware => middleware(params))
+// 返回的数组中的每一个中间件的形式为
+next => action => {
+   console.log('log1')
+   let result = next(action)
+   return result
+}
+```
+
+```js
+compose(...middlewareArr);
+// 的结果为        
+(...arg) => mid1(mid2(mid3(...arg)))
+```
+
+```js
+dispatch = compose(...middlewareArr)(dispatch)
+// 的结果为
+action => {
+   console.log('log1')
+   let result = next(action)
+   return result
+}
+
+// 其实就是把 dispatch函数 赋值给最里面那个中间件的next。
+// 而最外层中间件的next是前面中间件封装过的。
+```
+
+
 2. 不直接替换dispatch，而是作为高阶函数增强createStore，最后return的是一个新的store
 
 ## 7.洋葱圈模型
