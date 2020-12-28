@@ -68,6 +68,13 @@ useEffect(()=>{
 
 3. 如果执行函数中返回清除函数，清除函数会在组件重新渲染或者卸载时运行。 
 
+# useLayoutEffect()
+
+useEffect 在浏览器渲染完成**后**执行，不会阻塞浏览器更新屏幕，是**异步**的。
+
+useLayoutEffect 在浏览器渲染**前**执行，是**同步**的。因此useLayoutEffect 总是比 useEffect 先执行。
+
+
 # Memo api
 
 ```Memo(fn)```
