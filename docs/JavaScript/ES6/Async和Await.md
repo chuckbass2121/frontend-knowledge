@@ -43,3 +43,80 @@ async 函数中的返回值会成为返回的 Promise 对象中 resolve 的值�
 await 语句后面跟随的是一个 thenable 对象（即包含 then 的对象，类 Promise 对象），此时 await 会把他们当成是一个标准的 Promise 来处理，并且返回该 Promise resolved 的值。如果是基本数据类型的话，则会直接返回这个值。
 
 当 await 后面的 Promise 抛出一个错误时，此时会直接跳出 async 函数并被 async 函数的 catch 捕获。如果想要不中断 async 函数继续执行的话，可以尝试在内部对 await 用 try catch 包裹起来。
+
+
+## await 后加 普通函数, 普通函数立即执行， 跟没加await一样
+
+```js
+async function test(params) {
+	await setTimeout(() => {
+		console.log(1);
+	}, 1000);
+	console.log(2);
+}
+
+test();
+// 2 
+// 1
+```
+
+```js
+function normalFunc() {
+	console.log('normalFunc');
+}
+
+async function test1() {
+	await normalFunc();
+	console.log(2);
+}
+
+test1();
+// normalFunc
+// 2
+```
+
+## await 串行
+getBar() 会等待 getFoo()返回后执行。
+```js
+async function parell(){
+    let foo = await getFoo();
+    let bar = await getBar();
+}
+```
+
+## await 并行
+getBar()，getFoo() 同时执行。
+```js
+// 写法一
+let [foo, bar] = await Promise.all([getFoo(), getBar()]);
+
+// 写法二
+let fooPromise = getFoo();
+let barPromise = getBar();
+let foo = await fooPromise;
+let bar = await barPromise;
+```
+
+## async在循环中使用
+在forEach中的并行执行的
+```js
+function dbFuc(db) { //这里不需要 async
+  let docs = [{}, {}, {}];
+
+  // 可能得到错误结果
+  docs.forEach(async function (doc) {
+    await db.post(doc);
+  });
+}
+```
+
+在 for...of 和普通for中是串行执行的
+```js
+async function dbFuc(db) {
+  let docs = [{}, {}, {}];
+
+  for (let doc of docs) {
+    await db.post(doc);
+  }
+}
+```

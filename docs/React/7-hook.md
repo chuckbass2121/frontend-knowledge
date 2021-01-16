@@ -81,7 +81,7 @@ useLayoutEffect 在浏览器渲染**前**执行，是**同步**的。因此useLa
 只应用于函数组件，用来代替 shouldComponentUpdate()
 
 # useMemo()
-
+缓存函数的执行结果。
 ```jsx
 useMemo(()=>{},[deps])
 ```
@@ -93,6 +93,8 @@ useMemo() 不是用来代替生命周期函数的。
 它的作用是性能优化的。比如优化耗时计算，传递函数给子组件。
 
 # useCallback()
+缓存函数fn（不会执行这个函数）
+
 ```jsx
 useCallback(fn, [deps])
 ```
